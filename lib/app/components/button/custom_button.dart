@@ -47,36 +47,36 @@ class CustomButton extends StatelessWidget {
       ),
     );
 
-    return Center(
-        child: SizedBox(
-            width: width ?? Dimensions.webMaxWidth,
-            child: Padding(
-              padding: margin == null ? const EdgeInsets.all(0) : margin!,
-              child: TextButton(
-                onPressed: onPressed == null ? null : () => onPressed!(),
-                style: flatButtonStyle,
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  icon != null
-                      ? Padding(
-                          padding: EdgeInsets.only(
-                              right: Dimensions.paddingSizeExtraSmall),
-                          child: Icon(icon,
-                              color: transparent
-                                  ? Theme.of(context).primaryColor
-                                  : Theme.of(context).cardColor),
-                        )
-                      : const SizedBox(),
-                  Text(buttonText,
-                      textAlign: TextAlign.center,
-                      style: robotoRegular.copyWith(
-                        color: transparent
-                            ? Theme.of(context).primaryColor
-                            : Colors.white,
-                        fontSize: fontSize ?? Dimensions.fontSizeLarge,
-                      )),
-                ]),
-              ),
-            )));
+    return SizedBox(
+        width: width ?? Dimensions.webMaxWidth,
+        height: height,
+        child: Padding(
+          padding: margin == null ? const EdgeInsets.all(0) : margin!,
+          child: TextButton(
+            onPressed: onPressed == null ? null : () => onPressed!(),
+            style: flatButtonStyle,
+            child:
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              icon != null
+                  ? Padding(
+                      padding: EdgeInsets.only(
+                          right: Dimensions.paddingSizeExtraSmall),
+                      child: Icon(icon,
+                          color: transparent
+                              ? Theme.of(context).primaryColor
+                              : Theme.of(context).cardColor),
+                    )
+                  : const SizedBox(),
+              Text(buttonText,
+                  textAlign: TextAlign.center,
+                  style: robotoRegular.copyWith(
+                    color: transparent
+                        ? Theme.of(context).primaryColor
+                        : Colors.white,
+                    fontSize: fontSize ?? Dimensions.fontSizeLarge,
+                  )),
+            ]),
+          ),
+        ));
   }
 }

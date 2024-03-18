@@ -1,3 +1,5 @@
+import 'package:citgroupvn_efood_table/app/routes/app_routes.dart';
+import 'package:citgroupvn_efood_table/data/model/response/oders_list_details.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/maintabview/main_tabview.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/order/payment.dart';
 
@@ -144,7 +146,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                             transparent: true,
                             buttonText: 'back_to_home'.tr,
                             fontSize: Dimensions.fontSizeDefault,
-                            onPressed: () => Get.offAll(() => MainTabView()),
+                            onPressed: () => Get.offAllNamed((Routes.maintabview)),
                           ),
                           SizedBox(
                             height: Dimensions.paddingSizeDefault,

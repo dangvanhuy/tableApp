@@ -425,42 +425,42 @@ class OrderDetailsView extends StatelessWidget {
                                                     PriceConverter.convertPrice(
                                                         total + addOnsPrice),
                                                 isTotal: true),
-                                            PriceWithType(
-                                              type: '${'paid_amount'.tr}${orderController.currentOrderDetails?.order?.paymentMethod != null ?
-                                                  //'(${orderController.currentOrderDetails?.order?.paymentMethod})' : ' (${'un_paid'.tr}) '}',
-                                                  '(${orderController.currentOrderDetails?.order?.paymentMethod})' : ''}',
-                                              amount: PriceConverter
-                                                  .convertPrice(orderController
-                                                              .currentOrderDetails
-                                                              ?.order
-                                                              ?.paymentStatus !=
-                                                          'unpaid'
-                                                      ? orderController
-                                                              .currentOrderDetails
-                                                              ?.order
-                                                              ?.orderAmount ??
-                                                          0
-                                                      : 0),
-                                            ),
-                                            PriceWithType(
-                                              type: 'change'.tr,
-                                              amount: PriceConverter
-                                                  .convertPrice(orderController
-                                                          .getOrderSuccessModel()
-                                                          ?.firstWhere((order) =>
-                                                              order.orderId ==
-                                                              orderController
-                                                                  .currentOrderDetails
-                                                                  ?.order
-                                                                  ?.id
-                                                                  .toString())
-                                                          .changeAmount ??
-                                                      0),
-                                            ),
-                                            SizedBox(
-                                              height:
-                                                  Dimensions.paddingSizeDefault,
-                                            ),
+                                            // PriceWithType(
+                                            //   type: '${'paid_amount'.tr}${orderController.currentOrderDetails?.order?.paymentMethod != null ?
+                                            //       //'(${orderController.currentOrderDetails?.order?.paymentMethod})' : ' (${'un_paid'.tr}) '}',
+                                            //       '(${orderController.currentOrderDetails?.order?.paymentMethod})' : ''}',
+                                            //   amount: PriceConverter
+                                            //       .convertPrice(orderController
+                                            //                   .currentOrderDetails
+                                            //                   ?.order
+                                            //                   ?.paymentStatus !=
+                                            //               'unpaid'
+                                            //           ? orderController
+                                            //                   .currentOrderDetails
+                                            //                   ?.order
+                                            //                   ?.orderAmount ??
+                                            //               0
+                                            //           : 0),
+                                            // ),
+                                            // PriceWithType(
+                                            //   type: 'change'.tr,
+                                            //   amount: PriceConverter
+                                            //       .convertPrice(orderController
+                                            //               .getOrderSuccessModel()
+                                            //               ?.firstWhere((order) =>
+                                            //                   order.orderId ==
+                                            //                   orderController
+                                            //                       .currentOrderDetails
+                                            //                       ?.order
+                                            //                       ?.id
+                                            //                       .toString())
+                                            //               .changeAmount ??
+                                            //           0),
+                                            // ),
+                                            // SizedBox(
+                                            //   height:
+                                            //       Dimensions.paddingSizeDefault,
+                                            // ),
                                           ],
                                         )
                                       : Column(

@@ -125,9 +125,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     ((price + variationPrice) * productController.quantity) +
                         addonsCost;
                 double priceWithVariation = price + variationPrice;
-                bool isAvailable = DateConverter.isAvailable(
-                    widget.product.availableTimeStarts,
-                    widget.product.availableTimeEnds);
+                // bool isAvailable = DateConverter.isAvailable(
+                //     widget.product.availableTimeStarts,
+                //     widget.product.availableTimeEnds);
+                bool isAvailable =true;
 
                 // _cartIndex = cartController.getCartIndex(widget.product);
 

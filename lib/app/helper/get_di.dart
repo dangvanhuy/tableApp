@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:citgroupvn_efood_table/app/core/constants/app_constants.dart';
+import 'package:citgroupvn_efood_table/presentation/controller/oder/order_controller_rm.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/settings/settings_controller.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/oder/order_list_controller.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/maintabview/main_tabview_controller.dart';
@@ -53,6 +54,8 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => MainTabviewController());
   Get.lazyPut(() => OrderListController( orderRepo: Get.find()));
   Get.lazyPut(() => SettingsController());
+  Get.lazyPut(() => OrderControllerRM());
+
 
   // Retrieving localized data
   Map<String, Map<String, String>> languages = {};

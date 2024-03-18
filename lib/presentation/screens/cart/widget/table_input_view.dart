@@ -1,3 +1,4 @@
+import 'package:citgroupvn_efood_table/app/util/object_utils.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/cart/cart_controller.dart';
 import 'package:citgroupvn_efood_table/data/model/response/config_model.dart';
 import 'package:citgroupvn_efood_table/app/helper/responsive_helper.dart';
@@ -11,7 +12,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TableInputView extends StatefulWidget {
-  const TableInputView({Key? key}) : super(key: key);
+   TableInputView({Key? key, this.callback}) : super(key: key);
+  Function? callback;
 
   @override
   State<TableInputView> createState() => _TableInputViewState();
@@ -37,9 +39,12 @@ class _TableInputViewState extends State<TableInputView> {
   }
 
   @override
-  void dispose() {
+  void dispose()async {
     _peopleNumberController.dispose();
     _peopleNumberFocusNode.dispose();
+    if(widget.callback!=null){
+      widget.callback!();
+    }
     super.dispose();
   }
 

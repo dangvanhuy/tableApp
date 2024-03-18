@@ -1,46 +1,24 @@
-import 'package:citgroupvn_efood_table/app/core/constants/color_constants.dart';
+import 'package:citgroupvn_efood_table/app/components/custom_loader.dart';
+import 'package:citgroupvn_efood_table/app/core/constants/data_constant.dart';
+import 'package:citgroupvn_efood_table/app/helper/price_converter.dart';
 import 'package:citgroupvn_efood_table/app/util/icon_utils.dart';
 import 'package:citgroupvn_efood_table/data/model/response/oders_list_details.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/oder/order_controller_rm.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/order/payment.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/order/widget/oder_update_view.dart';
+import 'package:citgroupvn_efood_table/presentation/screens/splash/splash.dart';
+import 'package:flutter/material.dart';
 
-class OrderListView extends StatefulWidget {
-  final bool fromPlaceOrder;
+import 'package:get/get.dart';
+import '../../../../base/base_view.dart';
 
-  const OrderListView({
-    Key? key,
-    this.fromPlaceOrder = false,
-  }) : super(key: key);
+import '../controllers/order_rm_controller.dart';
 
+class OrderRmView extends BaseView<OrderRmController> {
+  const OrderRmView({Key? key}) : super(key: key);
   @override
-  State<OrderListView> createState() => _OrderListViewState();
-}
-
-class _OrderListViewState extends State<OrderListView> {
-  int currentMinute = 0;
-  
-
-  @override
-  void initState() {
-    Get.find<OrderControllerRM>().getOrderList().then((value){
-      setState(() {
-        
-      });
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    Get.find<OrderController>().cancelTimer();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget buildView(BuildContext context) {
     return Scaffold(
-      appBar: ResponsiveHelper.isTab(context)
+       appBar: ResponsiveHelper.isTab(context)
           ? null
           : const CustomAppBar(
               isBackButtonExist: false,
@@ -58,31 +36,34 @@ class _OrderListViewState extends State<OrderListView> {
 
   Center _body(BuildContext context) {
     return Center(
-      child: GetBuilder<OrderControllerRM>(builder: (orderController) {
-        return orderController.isLoading.value
+      child: Obx(()=> controller.isLoading.value
             ? Center(child: CustomLoader(color: Theme.of(context).primaryColor))
-            : orderController.orderList.isEmpty 
+            : controller.orderList.isEmpty 
                 ? NoDataScreen(text: 'you_hove_no_order'.tr)
                 : Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 10),
                     child: ListView.builder(
-                      itemCount: orderController.orderList.value.length,
+                      itemCount: controller.orderList.value.length,
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            Get.to(
-                              () => const OrdersUpdateScreen(
-                                isOrderDetails: true,
-                              ),
-                            );
+                            Get.toNamed(Routes.ORDER_DETAIL_RM, parameters: {
+                              "isOrderDetails":"true",
+                              "idOrder": controller.orderList.value[index].id.toString()
+                            });
+                            // Get.to(
+                            //   () => const OrdersUpdateScreen(
+                            //     isOrderDetails: true,
+                            //   ),
+                            // );
                           },
-                          child: _cardItem(order:orderController.orderList.value[index] ),
+                          child: _cardItem(order:controller.orderList.value[index] ),
                         );
                       },
                     ),
-                  );
-      }),
+                  )
+      ),
     );
   }
 

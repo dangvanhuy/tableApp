@@ -1,3 +1,4 @@
+import 'package:citgroupvn_efood_table/data/model/response/oders_list_details.dart';
 import 'package:citgroupvn_efood_table/data/model/response/product_model.dart';
 import 'package:get/get.dart';
 
@@ -29,106 +30,8 @@ class OrderDetails {
   }
 }
 
-class Order {
-  int? id;
-  double? orderAmount;
-  int? couponDiscountAmount;
-  String? couponDiscountTitle;
-  String? paymentStatus;
-  String? orderStatus;
-  int? totalTaxAmount;
-  String? paymentMethod;
-  String? createdAt;
-  String? updatedAt;
-  int? checked;
-  String? orderNote;
-  String? couponCode;
-  String? orderType;
-  int? branchId;
-  String? deliveryDate;
-  String? deliveryTime;
-  String? extraDiscount;
-  int? preparationTime;
-  int? tableId;
-  int? numberOfPeople;
-  int? tableOrderId;
 
-  Order(
-      {this.id,
-      this.orderAmount,
-      this.couponDiscountAmount,
-      this.couponDiscountTitle,
-      this.paymentStatus,
-      this.orderStatus,
-      this.totalTaxAmount,
-      this.paymentMethod,
-      this.createdAt,
-      this.updatedAt,
-      this.checked,
-      this.orderNote,
-      this.couponCode,
-      this.orderType,
-      this.branchId,
-      this.deliveryDate,
-      this.deliveryTime,
-      this.extraDiscount,
-      this.preparationTime,
-      this.tableId,
-      this.numberOfPeople,
-      this.tableOrderId});
 
-  Order.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    orderAmount = double.parse('${json['order_amount']}');
-    couponDiscountAmount = json['coupon_discount_amount'];
-    couponDiscountTitle = json['coupon_discount_title'];
-    paymentStatus = json['payment_status'];
-    orderStatus = json['order_status'];
-    totalTaxAmount = int.tryParse('${json['total_tax_amount']}');
-    paymentMethod = json['payment_method'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    checked = int.tryParse('${json['checked']}');
-    orderNote = json['order_note'];
-    couponCode = json['coupon_code'];
-    orderType = json['order_type'];
-    branchId = int.tryParse('${json['branch_id']}');
-    deliveryDate = json['delivery_date'];
-    deliveryTime = json['delivery_time'];
-    extraDiscount = json['extra_discount'];
-    preparationTime = int.tryParse('${json['preparation_time']}');
-    tableId = int.tryParse('${json['table_id']}');
-    numberOfPeople = int.tryParse('${json['number_of_people']}');
-    tableOrderId = int.tryParse('${json['table_order_id']}');
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['order_amount'] = orderAmount;
-    data['coupon_discount_amount'] = couponDiscountAmount;
-    data['coupon_discount_title'] = couponDiscountTitle;
-    data['payment_status'] = paymentStatus;
-    data['order_status'] = orderStatus;
-    data['total_tax_amount'] = totalTaxAmount;
-    data['payment_method'] = paymentMethod;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
-    data['checked'] = checked;
-    data['order_note'] = orderNote;
-    data['coupon_code'] = couponCode;
-    data['order_type'] = orderType;
-    data['branch_id'] = branchId;
-    data['delivery_date'] = deliveryDate;
-    data['delivery_time'] = deliveryTime;
-    data['extra_discount'] = extraDiscount;
-    data['preparation_time'] = preparationTime;
-    data['table_id'] = tableId;
-    data['number_of_people'] = numberOfPeople;
-    data['table_order_id'] = tableOrderId;
-    return data;
-  }
-}
 
 class Details {
   int? id;

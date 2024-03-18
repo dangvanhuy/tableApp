@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:citgroupvn_efood_table/app/util/view_utils.dart';
+import 'package:citgroupvn_efood_table/base/base_common.dart';
 import 'package:citgroupvn_efood_table/base/base_controller.dart';
 import 'package:citgroupvn_efood_table/data/api/test.dart';
+import 'package:citgroupvn_efood_table/data/model/response/oders_list_details.dart';
 import 'package:citgroupvn_efood_table/data/model/response/place_update_order_model.dart'
     as updateModle;
 import 'package:citgroupvn_efood_table/data/api/api_checker.dart';
@@ -70,6 +73,11 @@ class OrderController extends BaseController implements GetxService {
     _orderNote = value;
     update();
   }
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+  }
+
 
   Future<void> placeOrder(PlaceOrderBody placeOrderBody, Function callback,
       String paidAmount, double changeAmount) async {
@@ -81,7 +89,7 @@ class OrderController extends BaseController implements GetxService {
     if (response.statusCode == 200) {
       String message = response.body['message'];
       String orderID = response.body['order_id'].toString();
-
+      log(response.body.toString());
       _orderSuccessModel = OrderSuccessModel(
         orderId: '${response.body['order_id']}',
         branchTableToken: response.body['branch_table_token'],
@@ -90,6 +98,8 @@ class OrderController extends BaseController implements GetxService {
         tableId: Get.find<SplashController>().getTableId().toString(),
         branchId: Get.find<SplashController>().getBranchId().toString(),
       );
+
+      BaseCommon.instance.branchTableToken = _orderSuccessModel!.branchTableToken;
 
       List<OrderSuccessModel> list = [];
       try {
@@ -214,6 +224,7 @@ class OrderController extends BaseController implements GetxService {
     _orderList = null;
     if (_orderSuccessModel?.orderId != '-1') {
       _isLoading = true;
+      BaseCommon.instance.branchTableToken = _orderSuccessModel!.branchTableToken!;
       Response response = await orderRepo.getAllOders(
         _orderSuccessModel!.branchTableToken!,
       );

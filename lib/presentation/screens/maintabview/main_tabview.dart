@@ -41,7 +41,7 @@ class MainTabView extends BaseView<MainTabviewController> {
             shape: const CircularNotchedRectangle(),
             notchMargin: 0,
             child: SizedBox(
-              height: UtilsReponsive.height(context, 20),
+              height: UtilsReponsive.height(context, 100),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -81,8 +81,8 @@ class MainTabView extends BaseView<MainTabviewController> {
                         ),
                         Expanded(
                           child: MaterialButton(
-                            onPressed: () {
-                              controller.onItemTapped1(1);
+                            onPressed: () async{
+                          await    controller.onItemTapped1(1);
                             },
                             minWidth: UtilsReponsive.width(context, 40),
                             child: FittedBox(

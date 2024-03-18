@@ -1,3 +1,4 @@
+import 'package:citgroupvn_efood_table/data/model/response/oders_list_details.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/order/payment.dart';
 
 class DetailsOrderScreen extends StatefulWidget {
