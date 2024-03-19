@@ -206,7 +206,7 @@ class _CartUpdateViewState extends State<CartUpdateView> {
                             onTap: () {
                               DialogHelper.openDialog(
                                 context,
-                                const TableInputView(),
+                                TableInputView(),
                               );
                             },
                             child: Image.asset(

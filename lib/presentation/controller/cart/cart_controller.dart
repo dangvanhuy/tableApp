@@ -9,12 +9,11 @@ class CartController extends BaseController implements GetxService {
   final CartRepo cartRepo;
   CartController({required this.cartRepo});
 
-  List<CartModel> _cartList = [];
   double _amount = 0.0;
   final bool _isCartUpdate = false;
   int? _peopleNumber;
   double _totalAmount = 0.0;
-
+  List<CartModel> _cartList = [];
   List<CartModel> get cartList => _cartList;
   double get amount => _amount;
   double get totalAmount => _totalAmount;

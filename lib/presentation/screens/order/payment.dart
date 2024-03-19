@@ -25,6 +25,6 @@ export 'package:citgroupvn_efood_table/presentation/controller/splash/splash_con
 export 'package:citgroupvn_efood_table/data/model/response/product_model.dart';
 export 'package:citgroupvn_efood_table/app/components/divider/custom_divider.dart';
 export 'package:citgroupvn_efood_table/app/components/page_view/product_type_view.dart';
-export 'package:citgroupvn_efood_table/presentation/screens/cart/widget/cart_details_create.dart';
+export 'package:citgroupvn_efood_table/presentation/screens/cart/widget/cart_details.dart';
 export 'package:lottie/lottie.dart';
 export 'package:citgroupvn_efood_table/presentation/screens/order/payment.dart';

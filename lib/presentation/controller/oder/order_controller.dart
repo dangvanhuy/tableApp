@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:citgroupvn_efood_table/app/util/view_utils.dart';
+import 'package:citgroupvn_efood_table/base/base_common.dart';
 import 'package:citgroupvn_efood_table/base/base_controller.dart';
 import 'package:citgroupvn_efood_table/data/api/test.dart';
-import 'package:citgroupvn_efood_table/data/model/response/place_update_order_model.dart'
-    as updateModle;
+import 'package:citgroupvn_efood_table/data/model/response/oders_list_details.dart';
 import 'package:citgroupvn_efood_table/data/api/api_checker.dart';
 import 'package:citgroupvn_efood_table/data/model/response/order_details_model.dart';
 import 'package:citgroupvn_efood_table/data/model/response/order_success_model.dart';
+import 'package:citgroupvn_efood_table/data/model/response/update_order_model.dart';
 import 'package:citgroupvn_efood_table/data/repository/order_repo.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/cart/cart.dart';
 
@@ -15,13 +17,14 @@ import 'package:intl/intl.dart';
 
 class OrderController extends BaseController implements GetxService {
   final OrderRepo orderRepo;
-  OrderController({required this.orderRepo});
+  OrderController({
+    required this.orderRepo,
+  });
 
   bool _isLoading = false;
   final List<String> _paymentMethodList = ['cash', 'card'];
   String _selectedMethod = 'cash';
   PlaceOrderBody? _placeOrderBody;
-  updateModle.PlaceUpdateOrderBody? _placeUpdateOrderBody;
   String? _orderNote;
   String? _currentOrderId;
   String? _currentOrderToken;
@@ -29,16 +32,17 @@ class OrderController extends BaseController implements GetxService {
   OrderSuccessModel? _orderSuccessModel;
   Duration _duration = const Duration();
   Timer? _timer;
-
   List<Order>? _orderList;
+
+  UpdateOrderModel? _updateOrderModel;
+  UpdateOrderModel? get updateOrderModel => _updateOrderModel;
+
 
   String get selectedMethod => _selectedMethod;
 
   List<String> get paymentMethodList => _paymentMethodList;
   bool get isLoading => _isLoading;
   PlaceOrderBody? get placeOrderBody => _placeOrderBody;
-  updateModle.PlaceUpdateOrderBody? get placeUpdateOrderBody =>
-      _placeUpdateOrderBody;
   String? get orderNote => _orderNote;
   String? get currentOrderId => _currentOrderId;
   String? get currentOrderToken => _currentOrderToken;
@@ -71,6 +75,11 @@ class OrderController extends BaseController implements GetxService {
     update();
   }
 
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+  }
+
   Future<void> placeOrder(PlaceOrderBody placeOrderBody, Function callback,
       String paidAmount, double changeAmount) async {
     _isLoading = true;
@@ -81,7 +90,7 @@ class OrderController extends BaseController implements GetxService {
     if (response.statusCode == 200) {
       String message = response.body['message'];
       String orderID = response.body['order_id'].toString();
-
+      log(response.body.toString());
       _orderSuccessModel = OrderSuccessModel(
         orderId: '${response.body['order_id']}',
         branchTableToken: response.body['branch_table_token'],
@@ -90,6 +99,9 @@ class OrderController extends BaseController implements GetxService {
         tableId: Get.find<SplashController>().getTableId().toString(),
         branchId: Get.find<SplashController>().getBranchId().toString(),
       );
+
+      BaseCommon.instance.branchTableToken =
+          _orderSuccessModel!.branchTableToken;
 
       List<OrderSuccessModel> list = [];
       try {
@@ -111,56 +123,9 @@ class OrderController extends BaseController implements GetxService {
     }
     update();
   }
-
-  Future<void> updatePlaceOrder(
-      updateModle.PlaceUpdateOrderBody placeUpdateOrderBody,
-      Function callback,
-      String paidAmount,
-      double changeAmount) async {
-    _isLoading = true;
-    update();
-    Response response = await orderRepo.updatePlaceOrder(placeUpdateOrderBody);
-    _isLoading = false;
-
-    if (response.statusCode == 200) {
-      String message = response.body['message'];
-      String orderID = response.body['order_id'].toString();
-      print('response ${response.body}');
-      _orderSuccessModel = OrderSuccessModel(
-        orderId: '${response.body['order_id']}',
-        branchTableToken: response.body['branch_table_token'],
-        // paidAmount: double.parse(paidAmount.trim().isEmpty ? '0.0' : paidAmount),
-        changeAmount: changeAmount,
-        tableId: Get.find<SplashController>().getTableId().toString(),
-        branchId: Get.find<SplashController>().getBranchId().toString(),
-      );
-
-      List<OrderSuccessModel> list = [];
-      try {
-        list.addAll(orderRepo.getOrderSuccessModelList());
-      } catch (error) {
-        debugPrint('orderSuccess -$error');
-      }
-
-      list.add(_orderSuccessModel!);
-
-      orderRepo.addOrderModel(list);
-      callback(true, message, orderID);
-    } else {
-      callback(
-        false,
-        response.statusText,
-        '-1',
-      );
-    }
-    update();
-  }
-
-  List<Product> selectedProducts = []; // Danh sách các sản phẩm được chọn
 
   Future<void> updateOder() async {
-    updateModle.PlaceUpdateOrderBody formData =
-        updateModle.PlaceUpdateOrderBody(
+    UpdateOrderModel formData = UpdateOrderModel(
       products: [], // Truyền danh sách sản phẩm đã chọn
       tableId: Get.find<SplashController>().getTableId(),
       paymentMethod: _selectedMethod,
@@ -214,6 +179,8 @@ class OrderController extends BaseController implements GetxService {
     _orderList = null;
     if (_orderSuccessModel?.orderId != '-1') {
       _isLoading = true;
+      BaseCommon.instance.branchTableToken =
+          _orderSuccessModel!.branchTableToken!;
       Response response = await orderRepo.getAllOders(
         _orderSuccessModel!.branchTableToken!,
       );

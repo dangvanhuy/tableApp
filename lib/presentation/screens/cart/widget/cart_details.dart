@@ -139,7 +139,7 @@ class CartDetails extends BaseView<CartController> {
                             onTap: () {
                               DialogHelper.openDialog(
                                 context,
-                                 const TableInputView(),
+                                TableInputView(),
                               );
                             },
                             child: Image.asset(

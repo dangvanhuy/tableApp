@@ -1,7 +1,7 @@
 export 'package:citgroupvn_efood_table/app/components/menu/custom_app_bar.dart';
 export 'package:citgroupvn_efood_table/base/base_view.dart';
 export 'package:citgroupvn_efood_table/presentation/controller/cart/cart_controller.dart';
-export 'package:citgroupvn_efood_table/presentation/screens/cart/widget/cart_details_create.dart';
+export 'package:citgroupvn_efood_table/presentation/screens/cart/widget/cart_details.dart';
 export 'package:flutter/material.dart';
 export 'package:citgroupvn_efood_table/presentation/controller/splash/splash_controller.dart';
 export 'package:citgroupvn_efood_table/data/model/response/config_model.dart';

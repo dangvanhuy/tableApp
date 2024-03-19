@@ -36,7 +36,7 @@ class _ProductWidgetState extends State<ProductWidget> {
           endTime = endTime.add(const Duration(days: 1));
         }
         bool isAvailable =
-            currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
+           true;
 
         cartIndex = cartController.getCartIndex(widget.product);
         double productPrice = widget.product.price ?? 0;

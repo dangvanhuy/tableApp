@@ -1,3 +1,5 @@
+import 'package:citgroupvn_efood_table/app/modules/order_rm/controllers/order_rm_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_rm/views/order_rm_view.dart';
 import 'package:citgroupvn_efood_table/base/base_controller.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/oder/order_list_controller.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/settings/settings_controller.dart';
@@ -22,7 +24,7 @@ class MainTabviewController extends BaseController {
 
   RxList<Widget> body = RxList([
     const HomeScreen(),
-    const OrderListView(),
+    const OrderRmView(),
     const DetailsOrderScreen(),
     const SettingsView(),
   ]);
@@ -34,7 +36,7 @@ class MainTabviewController extends BaseController {
         Get.find<ProductController>();
         return selectedIndex.value = 0;
       case 'order-list':
-        Get.find<OrderListController>();
+        Get.find<OrderRmController>();
         return selectedIndex.value = 1;
       case 'details-order':
         Get.find<DetailsOrderScreen>();
@@ -47,14 +49,15 @@ class MainTabviewController extends BaseController {
     }
   }
 
-  onItemTapped1(int index) {
+  onItemTapped1(int index) async{
     switch (index) {
       case 0:
         Get.find<CartController>();
         Get.find<ProductController>();
         return selectedIndex.value = 0;
       case 1:
-        Get.find<OrderListController>();
+        Get.find<OrderRmController>();
+       await Get.find<OrderRmController>().getOrderList();
         return selectedIndex.value = 1;
       case 2:
         Get.find<DetailsOrderScreen>();

@@ -312,23 +312,7 @@ class _PaymentUpdateScreenState extends State<PaymentUpdateScreen> {
                                   buttonText: 'pay_after_eating'.tr,
                                   fontSize: Get.width < 420 ? 13 : null,
                                   onPressed: () {
-                                    final placeUpdateOrderBody =
-                                        orderController.placeUpdateOrderBody;
-                                    if (placeUpdateOrderBody != null) {
-                                      orderController.updatePlaceOrder(
-                                        placeUpdateOrderBody.copyWith(
-                                          paymentStatus: 'unpaid',
-                                          paymentMethod: '',
-                                          previousDue: orderController
-                                              .previousDueAmount(),
-                                        ),
-                                        callback,
-                                        '0',
-                                        0,
-                                      );
-                                    } else {
-                                      // Xử lý khi placeUpdateOrderBody là null
-                                    }
+                                    orderController.updateOder();
                                   },
                                 ),
                               ),
@@ -359,30 +343,7 @@ class _PaymentUpdateScreenState extends State<PaymentUpdateScreen> {
                                       showCustomSnackBar(
                                           'you_need_pay_more_amount'.tr);
                                     } else {
-                                      final placeUpdateOrderBody =
-                                          orderController.placeUpdateOrderBody;
-                                      if (placeUpdateOrderBody != null) {
-                                        orderController.updatePlaceOrder(
-                                          placeUpdateOrderBody.copyWith(
-                                            paymentStatus: 'unpaid',
-                                            paymentMethod: '',
-                                            previousDue: orderController
-                                                .previousDueAmount(),
-                                          ),
-                                          callback,
-                                          '0',
-                                          0,
-                                        );
-                                      } else {
-                                        // Xử lý khi placeUpdateOrderBody là null
-                                        placeUpdateOrderBody!.copyWith(
-                                          paymentStatus: 'unpaid',
-                                          paymentMethod: '',
-                                          previousDue: orderController
-                                              .previousDueAmount(),
-                                        );
-                                        callback(true, '', '');
-                                      }
+                                      orderController.updateOder();
                                     }
                                   },
                                 ),

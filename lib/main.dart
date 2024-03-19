@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:citgroupvn_efood_table/app/routes/app_pages.dart';
 import 'package:citgroupvn_efood_table/app/routes/app_routes.dart';
+import 'package:citgroupvn_efood_table/base/base_common.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/language/localization_controller.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/theme/theme_controller.dart';
 import 'package:citgroupvn_efood_table/app/helper/notification_helper.dart';
@@ -27,6 +28,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
+  BaseCommon abc = BaseCommon.instance;
   if (!GetPlatform.isWeb) {
     HttpOverrides.global = MyHttpOverrides();
   }

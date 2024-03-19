@@ -1,10 +1,11 @@
 import 'dart:developer';
+import 'package:citgroupvn_efood_table/data/model/response/update_order_model.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:citgroupvn_efood_table/data/model/response/place_update_order_model.dart';
 
 class UpdateOder {
-  static Future<bool> updataOder(PlaceUpdateOrderBody model,
-    ) async {
+  static Future<bool> updataOder(
+    UpdateOrderModel model,
+  ) async {
     var dioRequest = dio.Dio();
     dioRequest.options.headers = {'Content-Type': 'application/json'};
 
