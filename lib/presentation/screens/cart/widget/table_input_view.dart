@@ -1,3 +1,4 @@
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/controllers/order_detail_update_rm_controller.dart';
 import 'package:citgroupvn_efood_table/app/util/object_utils.dart';
 import 'package:citgroupvn_efood_table/presentation/controller/cart/cart_controller.dart';
 import 'package:citgroupvn_efood_table/data/model/response/config_model.dart';
@@ -12,7 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TableInputView extends StatefulWidget {
-   TableInputView({Key? key, this.callback}) : super(key: key);
+  TableInputView({Key? key, this.callback}) : super(key: key);
   Function? callback;
 
   @override
@@ -39,10 +40,10 @@ class _TableInputViewState extends State<TableInputView> {
   }
 
   @override
-  void dispose()async {
+  void dispose() async {
     _peopleNumberController.dispose();
     _peopleNumberFocusNode.dispose();
-    if(widget.callback!=null){
+    if (widget.callback != null) {
       widget.callback!();
     }
     super.dispose();
@@ -193,12 +194,17 @@ class _TableInputViewState extends State<TableInputView> {
                         _errorText = [];
                         _errorText.add('you_reach_max_capacity'.tr);
                       } else {
-                        splashController
-                            .setTableId(splashController.selectedTableId!);
-                        cartController.setPeopleNumber =
-                            int.parse(_peopleNumberController.text);
-                        cartController.update();
-                        Get.back();
+                        if (Get.isRegistered<OrderDetailUpdateRmController>()) {
+                          Get.find<OrderDetailUpdateRmController>().updateTable(idTable: splashController.selectedTableId!, numPeople:  int.parse(_peopleNumberController.text));
+                          Get.back();
+                        } else {
+                          splashController
+                              .setTableId(splashController.selectedTableId!);
+                          cartController.setPeopleNumber =
+                              int.parse(_peopleNumberController.text);
+                          cartController.update();
+                          Get.back();
+                        }
                       }
                     } else {
                       _errorText = [];

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:citgroupvn_efood_table/base/base_controller.dart';
 import 'package:citgroupvn_efood_table/data/model/response/cart_model.dart';
 import 'package:citgroupvn_efood_table/data/model/response/product_model.dart';
@@ -87,6 +90,7 @@ class CartController extends BaseController implements GetxService {
   }
 
   void addToCart(CartModel cartModel, int index) {
+    log(jsonEncode(cartModel));
     if (index != -1) {
       _cartList.replaceRange(index, index + 1, [cartModel]);
     } else {

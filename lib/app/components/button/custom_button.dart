@@ -12,6 +12,7 @@ class CustomButton extends StatelessWidget {
   final double? fontSize;
   final double radius;
   final IconData? icon;
+  final Color? bgColor;
 
   const CustomButton({
     super.key,
@@ -24,6 +25,7 @@ class CustomButton extends StatelessWidget {
     this.fontSize,
     this.radius = 5,
     this.icon,
+    this.bgColor
   });
 
   @override

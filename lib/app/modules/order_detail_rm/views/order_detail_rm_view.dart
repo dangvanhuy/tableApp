@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:citgroupvn_efood_table/app/core/constants/color_constants.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/model/FootSummary.dart';
 import 'package:citgroupvn_efood_table/app/util/number_format_utils.dart';
 import 'package:citgroupvn_efood_table/app/util/reponsive_utils.dart';
 import 'package:citgroupvn_efood_table/data/model/response/order_details_model.dart';
@@ -107,31 +108,8 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
                     color: Theme.of(context).disabledColor,
                   ),
                 ),
-                _rowTextFootSummary(title: "Giá sản phẩm", content: NumberFormatUtils.formatDong(controller.currentOrderDetails.value.order!.orderAmount!.toString())),
-                SizedBox(
-                  height: UtilsReponsive.height(context, 15),
-                ),
-                _rowTextFootSummary(title: "Giảm giá", content: NumberFormatUtils.formatDong(controller.currentOrderDetails.value.order!.couponDiscountAmount!.toString())),
-                SizedBox(
-                  height: UtilsReponsive.height(context, 15),
-                ),
-                _rowTextFootSummary(title: "VAT/Thuế", content:  NumberFormatUtils.formatDong(controller.currentOrderDetails.value.order!.totalTaxAmount!.toString())),
-                SizedBox(
-                  height: UtilsReponsive.height(context, 15),
-                ),
-                _rowTextFootSummary(title: "Phụ gia", content: NumberFormatUtils.formatDong(controller.currentOrderDetails.value.order!.totalTaxAmount!.toString())),
-                SizedBox(
-                  height: UtilsReponsive.height(context, 15),
-                ),
-                _rowTextFootSummary(title: "Tổng", content: NumberFormatUtils.formatDong(controller.currentOrderDetails.value.order!.totalTaxAmount!.toString()),isBold: true),
-                SizedBox(
-                  height: UtilsReponsive.height(context, 15),
-                ),
-                _rowTextFootSummary(title: "Số tiền đã thanh toán", content: NumberFormatUtils.formatDong(controller.currentOrderDetails.value.order!.totalTaxAmount!.toString())),
-                SizedBox(
-                  height: UtilsReponsive.height(context, 15),
-                ),
-                _rowTextFootSummary(title: "Thay đổi", content: NumberFormatUtils.formatDong(controller.currentOrderDetails.value.order!.totalTaxAmount!.toString())),
+                  Obx(() => _footSummary(context,
+                    data: controller.footSummaryData.value)),
                 SizedBox(
                   height: UtilsReponsive.height(context, 15),
                 ),
@@ -141,6 +119,40 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
               ],
             ),
           );
+  }
+                
+ Column _footSummary(BuildContext context, {required FootSummary data}) {
+    return Column(
+      children: [
+        _rowTextFootSummary(title: "Giá sản phẩm", content: data.originTotal),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Giảm giá", content: data.discount),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "VAT/Thuế", content: data.vat),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Phụ gia", content: data.extra),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(
+            title: "Tổng", content: data.finalTotal, isBold: true),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(
+            title: "Số tiền đã thanh toán", content: data.payed),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Thay đổi", content: data.change),
+      ],
+    );
   }
 
   Row _rowTextFootSummary(
@@ -265,12 +277,7 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
                   children: [
                     TextSpan(
                       text:
-                          '${'table'.tr} ${Get.find<SplashController>().getTable(
-                                controller
-                                    .currentOrderDetails.value.order?.tableId,
-                                branchId: controller
-                                    .currentOrderDetails.value.order?.branchId,
-                              )?.number} |',
+                          '${'table'.tr} ${controller.tableId} |',
                       style: robotoMedium.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                         color: Theme.of(context).textTheme.bodyLarge!.color,
@@ -278,7 +285,7 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
                     ),
                     TextSpan(
                       text:
-                          '${controller.currentOrderDetails.value.order?.numberOfPeople ?? 'add'.tr} ${'people'.tr}',
+                          '${controller.peopleNum ?? 'add'.tr} ${'people'.tr}',
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                         color: Theme.of(context).textTheme.bodyLarge!.color,

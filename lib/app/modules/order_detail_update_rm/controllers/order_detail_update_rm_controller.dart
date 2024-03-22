@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/model/FootSummary.dart';
@@ -7,14 +8,18 @@ import 'package:citgroupvn_efood_table/base/base_controller.dart';
 import 'package:citgroupvn_efood_table/data/api/api_checker.dart';
 import 'package:citgroupvn_efood_table/data/model/response/oders_list_details.dart';
 import 'package:citgroupvn_efood_table/data/model/response/order_details_model.dart';
+import 'package:citgroupvn_efood_table/data/model/response/order_success_model.dart';
 import 'package:citgroupvn_efood_table/data/repository/order_repo.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/cart/cart.dart';
 import 'package:get/get.dart';
+import 'package:citgroupvn_efood_table/data/model/response/cart_model.dart';
+import 'package:citgroupvn_efood_table/data/model/response/place_update_order_model.dart'
+    as rm;
 
 class OrderDetailUpdateRmController extends BaseController {
   //TODO: Implement OrderDetailUpdateRmController
   OrderDetailUpdateRmController({required this.orderId});
-  final orderId;
+  final String orderId;
   Rx<String> idOrder = ''.obs;
   final count = 0.obs;
 
@@ -23,32 +28,36 @@ class OrderDetailUpdateRmController extends BaseController {
   RxList<Order> orderList = <Order>[].obs;
   Rx<OrderDetails> currentOrderDetails = OrderDetails().obs;
 
-  Rx<String> tableId = "".obs;
+  Rx<int> tableId = 0.obs;
   Rx<int> peopleNum = 0.obs;
 
   Rx<FootSummary> footSummaryData = FootSummary().obs;
+
+  RxList<rm.Product> listProductsAdded = <rm.Product>[].obs;
+  RxList<rm.Product> listProductsAddedNew = <rm.Product>[].obs;
+
+  RxList<int> listIdTemp = <int>[].obs;
+  List<String> listIdAdded = <String>[].obs;
 
   final OrderRepo orderRepo =
       OrderRepo(apiClient: Get.find(), sharedPreferences: Get.find());
   @override
   Future<void> onInit() async {
-    try {
-      idOrder.value = orderId;
-      await getOrderDetail(orderId.toString());
-      recalculateFinalFoot();
+    // try {
+    idOrder.value = orderId;
+    await getOrderDetail(orderId.toString());
+    await convertOrderDetailToCart();
+    recalculateFinalFoot();
 
-      tableId.value = "${Get.find<SplashController>().getTable(
-            currentOrderDetails.value.order?.tableId,
-            branchId: currentOrderDetails.value.order?.branchId,
-          )?.number}";
-      peopleNum.value = Get.find<CartController>().peopleNumber!;
+    tableId.value = currentOrderDetails.value.order!.tableId!;
+    peopleNum.value = currentOrderDetails.value.order!.numberOfPeople!;
 
-      isLoading.value = false;
-    } catch (e) {
-      foundError(true);
-      log(e.toString());
-      isLoading.value = false;
-    }
+    isLoading.value = false;
+    // } catch (e) {
+    //   foundError(true);
+    //   log(e.toString());
+    //   isLoading.value = false;
+    // }
     super.onInit();
   }
 
@@ -62,27 +71,12 @@ class OrderDetailUpdateRmController extends BaseController {
     super.onClose();
   }
 
-  Future<void> getOrderList() async {
-    log(BaseCommon.instance.branchTableToken!);
-    isLoading.value = true;
-    Response response = await orderRepo.getAllOders(
-      BaseCommon.instance.branchTableToken ?? '',
-    );
-    log(response.body.toString());
-    if (response.statusCode == 200) {
-      orderList.value = OrderList(
-              order: OrderList.fromJson(response.body).order?.reversed.toList())
-          .order!;
-    } else {
-      ApiChecker.checkApi(response);
-    }
-  }
-
   Future<void> getOrderDetail(String idOrder) async {
     Response response = await orderRepo.getOrderDetails(
       idOrder.toString(),
       BaseCommon.instance.branchTableToken ?? "",
     );
+    log(jsonEncode(response.body));
     if (response.statusCode == 200) {
       currentOrderDetails.value = OrderDetails.fromJson(response.body);
     } else {
@@ -90,37 +84,117 @@ class OrderDetailUpdateRmController extends BaseController {
     }
   }
 
-  fetchWithNewId(String id) async {
-    try {
-      idOrder.value = id;
-      isLoading.value = true;
-      await getOrderDetail(idOrder.toString());
-      isLoading.value = false;
-    } catch (e) {
-      foundError(true);
-      log(e.toString());
-      isLoading.value = false;
-    }
+  convertOrderDetailToCart() {
+    currentOrderDetails.value.details!.forEach((element) {
+      String name = element.productDetails!.name!;
+      int productId = element.productDetails!.id!;
+      int priceOrigin = element.productDetails!.price!.round();
+      double price = element.price! * element.quantity!;
+      List<dynamic> variant = [];
+      List<Variation> variation = element.variations ?? [];
+      int discount = element.discountOnProduct!.round();
+      int? quantity = element.quantity;
+      int? taxAmount = element.taxAmount?.toInt();
+      List<int>? _addOnIds = [];
+      List<int>? _addOnQtys = [];
+
+      rm.Product data = rm.Product(
+          name: name,
+          productId: productId,
+          priceOrigin: priceOrigin,
+          price: price,
+          variant: variant,
+          variations: [],
+          discountAmount: discount,
+          quantity: quantity,
+          taxAmount: taxAmount,
+          addOnIds: [],
+          addOnQtys: []);
+      listProductsAdded.add(data);
+    });
   }
 
-  updateTable() async {
-   
-  }
-
-  
-
-  removeProduct(Details detail) async {
-    currentOrderDetails.value.details!.remove(detail);
+  removeProduct(rm.Product detail) async {
+    listProductsAdded.remove(detail);
     recalculateFinalFoot();
-    currentOrderDetails.update((val) {});
   }
 
   recalculateFinalFoot() {
-    footSummaryData.value =
-        FootSummary.fromOderDetail(orderDetail: currentOrderDetails.value);
+    footSummaryData.value = FootSummary.fromOderDetail(
+        listProduct: listProductsAdded.value,
+        orderDetail: currentOrderDetails.value);
     ;
   }
 
-  updateFinal(){
+  clearTemp() {
+    listProductsAdded.addAll(listProductsAddedNew);
+    listIdTemp.clear();
+    listProductsAddedNew.clear();
+    recalculateFinalFoot();
+  }
+
+  addCartModel(CartModel cartModel) {
+    rm.Product data = rm.Product.fromCartModel(cartModel);
+    log(jsonEncode(cartModel));
+    if(listIdTemp.indexOf(cartModel.product!.id!)!= -1){
+        listProductsAddedNew[listIdTemp.indexOf(cartModel.product!.id!)] =data;
+    }else{
+    listIdTemp.add(cartModel.product!.id!);
+     listProductsAddedNew.add(data);
+    }
+    
+   
+  }
+
+  int getCartIndex(int id) {
+    return listIdTemp.value.indexOf(id);
+  }
+
+  updateTable({required int idTable, required int numPeople}) {
+    tableId.value = idTable;
+    peopleNum.value = numPeople;
+  }
+
+  int getCartQty(int id) {
+    int qty = 0;
+    listProductsAddedNew.forEach((element) {
+      if (element.productId == id) {
+        qty = element.quantity!;
+        return;
+      }
+    });
+    return qty;
+  }
+
+  updateFinal() async {
+    rm.PlaceUpdateOrderBody placeOrder = rm.PlaceUpdateOrderBody(
+        products: listProductsAdded.value,
+        branchTableToken:  BaseCommon.instance.branchTableToken,
+        numberOfPeople: peopleNum.value,
+        orderAmount: footSummaryData.value.finalTotalValue,
+        orderId: int.tryParse(orderId),
+        orderNote: 'Test',
+        paymentMethod: currentOrderDetails.value.order!.paymentMethod ?? "",
+        paymentStatus: currentOrderDetails.value.order!.paymentStatus!,
+        tableId: tableId.value);
+    log(jsonEncode(placeOrder));
+
+    Response response = await orderRepo.updatePlaceOrder(placeOrder);
+    log(jsonEncode(response.body));
+    if (response.statusCode == 200) {
+      String message = response.body['message'];
+      String orderID = response.body['order_id'].toString();
+      log(response.body.toString());
+      OrderSuccessModel orderSuccessModel = OrderSuccessModel(
+        orderId: '${response.body['order_id']}',
+        branchTableToken: response.body['branch_table_token'],
+        changeAmount: 0,
+        tableId: Get.find<SplashController>().getTableId().toString(),
+        branchId: Get.find<SplashController>().getBranchId().toString(),
+      );
+      BaseCommon.instance.branchTableToken = orderSuccessModel.branchTableToken;
+      Get.back();
+      Get.snackbar("Thong bao", "Thanh cong");
+    }
   }
 }

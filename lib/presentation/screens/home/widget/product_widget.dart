@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:citgroupvn_efood_table/app/helper/dia_log_helper.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/controllers/order_detail_update_rm_controller.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/home/home.dart';
 import 'package:intl/intl.dart';
 
@@ -35,14 +39,20 @@ class _ProductWidgetState extends State<ProductWidget> {
         if (endTime.isBefore(startTime)) {
           endTime = endTime.add(const Duration(days: 1));
         }
-        bool isAvailable =
-           true;
-
-        cartIndex = cartController.getCartIndex(widget.product);
+        bool isAvailable = true;
+        int quantity = cartController.getCartQty(widget.product);
+        if (Get.isRegistered<OrderDetailUpdateRmController>()) {
+          log("message");
+         cartIndex =  Get.find<OrderDetailUpdateRmController>().getCartIndex(widget.product.id!);
+         quantity = Get.find<OrderDetailUpdateRmController>().getCartQty(widget.product.id!);
+        } else {
+          cartIndex = cartController.getCartIndex(widget.product);
+        }
         double productPrice = widget.product.price ?? 0;
         if (widget.product.branchProduct != null) {
           productPrice = widget.product.branchProduct?.price ?? 0;
         }
+
 
         return InkWell(
           onTap: () => DialogHelper.openDialog(
@@ -130,7 +140,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                                         bottom: Dimensions.paddingSizeDefault),
                                     child: Center(
                                       child: Text(
-                                        '${'qty'.tr} : ${cartController.getCartQty(widget.product)}',
+                                        '${'qty'.tr} : $quantity',
                                         style: robotoBold.copyWith(
                                           fontSize: Dimensions.fontSizeLarge,
                                           color: Colors.white,

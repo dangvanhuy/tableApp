@@ -1,14 +1,15 @@
 import 'package:citgroupvn_efood_table/app/core/constants/color_constants.dart';
 import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/model/FootSummary.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/views/pick_product_rm_view.dart';
 import 'package:citgroupvn_efood_table/app/util/number_format_utils.dart';
 import 'package:citgroupvn_efood_table/app/util/reponsive_utils.dart';
 import 'package:citgroupvn_efood_table/data/model/response/order_details_model.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/cart/cart.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/cart/cart_screen_update.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/home/home.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
-
+import 'package:citgroupvn_efood_table/data/model/response/place_update_order_model.dart'
+    as rm;
 import 'package:get/get.dart';
 
 import '../controllers/order_detail_update_rm_controller.dart';
@@ -55,7 +56,8 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
           // height: 50,
           buttonText: "Cập nhật đơn hàng",
           fontSize: Dimensions.fontSizeDefault,
-          onPressed: () {
+          onPressed: () async{
+           await controller.updateFinal();
             // Get.to(
             //   () => CartUpdateView(
             //     isOrderDetails: true,
@@ -77,20 +79,49 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
               children: [
                 _headerSummary(context),
                 const SizedBox(height: 40),
-             Obx(()=>   ListView.builder(
+                Obx(() => ListView.builder(
                     shrinkWrap: true,
                     primary: false,
                     itemCount:
-                        controller.currentOrderDetails.value.details?.length,
+                        controller.listProductsAdded.value.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {
-                        },
+                        onTap: () {},
                         child: _subItemDetail(context,
                             subItem: controller
-                                .currentOrderDetails.value.details![index]),
+                                .listProductsAdded.value[index]),
                       );
                     })),
+                SizedBox(
+                  height: UtilsReponsive.height(context, 15),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                          transparent: true,
+                          buttonText: "Xoá Đơn Hàng",
+                          fontSize: Dimensions.fontSizeDefault,
+                          onPressed: () {
+                          
+                          }),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                          // height: 50,
+                          buttonText: "Thêm món",
+                          fontSize: Dimensions.fontSizeDefault,
+                          onPressed: () {
+                            Get.to(
+                              () => PickProduct()
+                            );
+                          }),
+                    ),
+                  ],
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       vertical: UtilsReponsive.height(context, 50)),
@@ -98,8 +129,8 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                     color: Theme.of(context).disabledColor,
                   ),
                 ),
-            
-                Obx(()=>_footSummary(context, data: controller.footSummaryData.value)),
+                Obx(() => _footSummary(context,
+                    data: controller.footSummaryData.value)),
                 SizedBox(
                   height: UtilsReponsive.height(context, 15),
                 ),
@@ -111,52 +142,38 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
           );
   }
 
-  Column _footSummary(BuildContext context, {required FootSummary data }) {
-  
+  Column _footSummary(BuildContext context, {required FootSummary data}) {
     return Column(
-                children: [
-                      _rowTextFootSummary(
-                    title: "Giá sản phẩm",
-                    content: data.originTotal),
-                SizedBox(
-                  height: UtilsReponsive.height(context, 15),
-                ),
-                  _rowTextFootSummary(
-                  title: "Giảm giá",
-                  content: data.discount),
-              SizedBox(
-                height: UtilsReponsive.height(context, 15),
-              ),
-              _rowTextFootSummary(
-                  title: "VAT/Thuế",
-                  content: data.vat),
-              SizedBox(
-                height: UtilsReponsive.height(context, 15),
-              ),
-              _rowTextFootSummary(
-                  title: "Phụ gia",
-                  content: data.extra),
-              SizedBox(
-                height: UtilsReponsive.height(context, 15),
-              ),
-              _rowTextFootSummary(
-                  title: "Tổng",
-                  content: data.finalTotal,
-                  isBold: true),
-              SizedBox(
-                height: UtilsReponsive.height(context, 15),
-              ),
-              _rowTextFootSummary(
-                  title: "Số tiền đã thanh toán",
-                  content:data.payed),
-              SizedBox(
-                height: UtilsReponsive.height(context, 15),
-              ),
-              _rowTextFootSummary(
-                  title: "Thay đổi",
-                  content: data.change),
-                ],
-              );
+      children: [
+        _rowTextFootSummary(title: "Giá sản phẩm", content: data.originTotal),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Giảm giá", content: data.discount),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "VAT/Thuế", content: data.vat),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Phụ gia", content: data.extra),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(
+            title: "Tổng", content: data.finalTotal, isBold: true),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(
+            title: "Số tiền đã thanh toán", content: data.payed),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Thay đổi", content: data.change),
+      ],
+    );
   }
 
   Row _rowTextFootSummary(
@@ -180,9 +197,9 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
     );
   }
 
-  SizedBox _subItemDetail(BuildContext context, {required Details subItem}) {
+  SizedBox _subItemDetail(BuildContext context, {required rm.Product subItem}) {
     double totalPriceSubItem =
-        subItem.productDetails!.price! * subItem.quantity!;
+        subItem.price! ;
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -196,7 +213,7 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                   child: Padding(
                     padding: const EdgeInsets.all(5),
                     child: Text(
-                      subItem.productDetails!.name!,
+                      '${subItem.name}',
                       style: TextStyleConstant.black16Roboto,
                     ),
                   )),
@@ -216,7 +233,7 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                       ))),
               IconButton(
                 onPressed: () {
-                controller.removeProduct(subItem);
+                  controller.removeProduct(subItem);
                 },
                 icon: Icon(Icons.delete,
                     color: Theme.of(context).colorScheme.error),
@@ -234,7 +251,7 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                   padding: const EdgeInsets.all(5.0),
                   child: Text(
                       NumberFormatUtils.formatDong(
-                          subItem.productDetails!.price!.toString()),
+                          subItem.priceOrigin!.toString()),
                       style: TextStyle(fontSize: 16, color: Colors.grey)),
                 ),
               ),
@@ -297,7 +314,8 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                         context,
                         TableInputView(
                           callback: () async {
-                            await controller.updateTable();
+                          
+                            // await controller.updateTable();
                           },
                         ),
                       );

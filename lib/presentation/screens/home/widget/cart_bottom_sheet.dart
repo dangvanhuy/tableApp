@@ -1,3 +1,5 @@
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/controllers/order_detail_update_rm_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/views/pick_product_rm_view.dart';
 import 'package:citgroupvn_efood_table/presentation/screens/home/home.dart';
 import 'package:citgroupvn_efood_table/data/model/response/cart_model.dart'
     as cart;
@@ -128,7 +130,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                 // bool isAvailable = DateConverter.isAvailable(
                 //     widget.product.availableTimeStarts,
                 //     widget.product.availableTimeEnds);
-                bool isAvailable =true;
+                bool isAvailable = true;
 
                 // _cartIndex = cartController.getCartIndex(widget.product);
 
@@ -872,14 +874,16 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                             );
 
                                             Get.back();
-
-                                            cartController.addToCart(
+                                            if (Get.isRegistered<OrderDetailUpdateRmController>()) {
+                                                Get.find<OrderDetailUpdateRmController>().addCartModel(cartModel);
+                                            }else{
+                                                cartController.addToCart(
                                                 cartModel,
                                                 widget.cart != null
                                                     ? widget.cartIndex!
                                                     : productController
                                                         .cartIndex);
-
+                                            }
                                             showCustomSnackBar(
                                                 'item_added_to_cart'.tr,
                                                 isError: false,

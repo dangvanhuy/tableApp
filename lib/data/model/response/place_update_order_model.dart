@@ -3,7 +3,8 @@
 //     final placeUpdateOrderBody = placeUpdateOrderBodyFromJson(jsonString);
 
 import 'dart:convert';
-
+import 'package:citgroupvn_efood_table/data/model/response/place_order_body.dart';
+import 'package:citgroupvn_efood_table/presentation/screens/cart/cart.dart';
 PlaceUpdateOrderBody placeUpdateOrderBodyFromJson(String str) =>
     PlaceUpdateOrderBody.fromJson(json.decode(str));
 
@@ -86,14 +87,16 @@ class PlaceUpdateOrderBody {
 
 class Product {
   int? productId;
-  int? price;
-  String? variant;
-  List<dynamic>? variations;
+  double? price;
+  List<dynamic>? variant;
+  List<OrderVariation>? variations;
   int? discountAmount;
   int? quantity;
   int? taxAmount;
-  List<dynamic>? addOnIds;
-  List<dynamic>? addOnQtys;
+  List<int>? addOnIds;
+  List<int>? addOnQtys;
+  int? priceOrigin;
+  String? name;
 
   Product({
     this.productId,
@@ -105,6 +108,8 @@ class Product {
     this.taxAmount,
     this.addOnIds,
     this.addOnQtys,
+    this.priceOrigin = 0,
+    this.name = ''
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -113,16 +118,29 @@ class Product {
         variant: json["variant"],
         variations: json["variations"] == null
             ? []
-            : List<dynamic>.from(json["variations"]!.map((x) => x)),
+            : List<OrderVariation>.from(json["variations"]!.map((x) => OrderVariation.fromJson(x))),
         discountAmount: json["discount_amount"],
         quantity: json["quantity"],
         taxAmount: json["tax_amount"],
         addOnIds: json["add_on_ids"] == null
             ? []
-            : List<dynamic>.from(json["add_on_ids"]!.map((x) => x)),
+            : List<int>.from(json["add_on_ids"]!.map((x) => x)),
         addOnQtys: json["add_on_qtys"] == null
             ? []
-            : List<dynamic>.from(json["add_on_qtys"]!.map((x) => x)),
+            : List<int>.from(json["add_on_qtys"]!.map((x) => x)),
+      );
+      factory Product.fromCartModel(CartModel cart) => Product(
+        name: cart.product!.name!,
+        price: (cart.price! * cart.quantity!),
+        productId: cart.product!.id,
+        priceOrigin: cart.product!.price!.round(),
+        variant: cart.product!.addOns,
+        variations: [],
+        discountAmount: cart.discountAmount!.round(),
+        quantity: cart.quantity,
+        taxAmount: cart.taxAmount!.round(),
+        addOnIds: [],
+        addOnQtys: [],
       );
 
   Map<String, dynamic> toJson() => {
