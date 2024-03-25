@@ -37,6 +37,7 @@ dependencies:
   rxdart: ^0.27.7
   ionicons: ^0.2.2
   dio: ^5.4.1
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_lints: ^2.0.1
