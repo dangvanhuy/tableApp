@@ -1,4 +1,4 @@
-import 'package:citgroupvn_efood_table/presentation/controller/splash/splash_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/splash/controller/splash_controller.dart';
 import 'package:citgroupvn_efood_table/data/model/response/config_model.dart';
 import 'package:get/get.dart';
 

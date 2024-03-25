@@ -7,11 +7,9 @@ class OrderDetailUpdateRmBinding extends BaseBindings {
   @override
   void injectService() {
     final parameters = Get.parameters;
-    final String orderId = parameters["idOrder"] ?? "";
+    final String orderId = parameters["idOrder"]??"";
     Get.lazyPut<OrderDetailUpdateRmController>(
-      () => OrderDetailUpdateRmController(
-        orderId: orderId,
-      ),
+      () => OrderDetailUpdateRmController(orderId:orderId),
     );
   }
 }

@@ -18,7 +18,7 @@ class AppTextStyle {
   static TextStyle textTitleAppBar = GoogleFonts.roboto(
     textStyle: TextStyleConstant.grey16RobotoBold,
     fontSize: 18,
-    color: Colors.black,
+    color: Colors.white,
     fontWeight: FontWeight.w800,
   );
   static TextStyle textTitleStatistical = GoogleFonts.roboto(

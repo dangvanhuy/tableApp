@@ -1,17 +1,15 @@
-import 'dart:ffi';
-
+import 'package:citgroupvn_efood_table/app/components/custom_loader.dart';
 import 'package:citgroupvn_efood_table/app/core/constants/color_constants.dart';
-import 'package:citgroupvn_efood_table/app/modules/product/views/product_list_view.dart';
+import 'package:citgroupvn_efood_table/app/helper/dia_log_helper.dart';
+import 'package:citgroupvn_efood_table/app/modules/cart/cart.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/model/FootSummary.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/views/pick_product_rm_view.dart';
 import 'package:citgroupvn_efood_table/app/util/number_format_utils.dart';
 import 'package:citgroupvn_efood_table/app/util/reponsive_utils.dart';
 import 'package:citgroupvn_efood_table/data/model/response/order_details_model.dart';
-import 'package:citgroupvn_efood_table/data/repository/cart_repo.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/cart/cart.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/home/home.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/order/payment_update_screen.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:citgroupvn_efood_table/data/model/response/place_update_order_model.dart'
+    as rm;
 import 'package:get/get.dart';
 
 import '../controllers/order_detail_update_rm_controller.dart';
@@ -53,14 +51,25 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
         showCart: false,
         onBackPressed: () => Get.back(),
       ),
+      // bottomNavigationBar: CustomButton(
+      //     width: 300,
+      //     // height: 50,
+      //     buttonText: "Cập nhật đơn hàng",
+      //     fontSize: Dimensions.fontSizeDefault,
+      //     onPressed: () async{
+      //      await controller.updateFinal();
+      //       // Get.to(
+      //       //   () => CartUpdateView(
+      //       //     isOrderDetails: true,
+      //       //     oderId: controller.orderId.toString(),
+      //       //   ),
+      //       // );
+      //     }),
       body: Obx(() => _tabletView(context)),
     );
   }
 
   _mainData(BuildContext context) {
-    final cartController = Get.find<CartController>();
-    final List<CartModel> cartList = cartController.cartList;
-
     return controller.currentOrderDetails == null
         ? Center(child: CustomLoader(color: Theme.of(context).primaryColor))
         : SingleChildScrollView(
@@ -73,218 +82,51 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                 Obx(() => ListView.builder(
                     shrinkWrap: true,
                     primary: false,
-                    itemCount:
-                        controller.currentOrderDetails.value.details?.length,
+                    itemCount: controller.listProductsAdded.value.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {},
                         child: _subItemDetail(context,
-                            subItem: controller
-                                .currentOrderDetails.value.details![index]),
+                            subItem: controller.listProductsAdded.value[index]),
                       );
                     })),
-                Builder(builder: (context) {
-                  final orderController = Get.find<OrderController>();
-
-                  bool render = false;
-                  if (orderController.currentOrderDetails?.details != null) {
-                    render = true;
-                  }
-                  double itemsPrice = 0;
-                  double discount = 0;
-                  double tax = 0;
-                  double addOnsPrice = 0;
-                  List<Details> orderDetails =
-                      orderController.currentOrderDetails?.details ?? [];
-                  if (orderController.currentOrderDetails?.details != null) {
-                    for (Details orderDetails in orderDetails) {
-                      itemsPrice = itemsPrice +
-                          (orderDetails.price! *
-                              orderDetails.quantity!.toInt());
-                      discount = discount +
-                          (orderDetails.discountOnProduct! *
-                              orderDetails.quantity!.toInt());
-                      tax = (tax +
-                          (orderDetails.taxAmount! *
-                              orderDetails.quantity!.toInt()) +
-                          orderDetails.addonTaxAmount!);
-                    }
-                  }
-
-                  double total = itemsPrice - discount + tax;
-
-                  return render
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            Text.rich(
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                              TextSpan(
-                                children: orderController.currentOrderDetails
-                                            ?.order?.orderNote !=
-                                        null
-                                    ? [
-                                        TextSpan(
-                                          text: 'note'.tr,
-                                          style: robotoMedium.copyWith(
-                                            fontSize: Dimensions.fontSizeLarge,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge!
-                                                .color,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              ' ${orderController.currentOrderDetails?.order?.orderNote ?? ''}',
-                                          style: robotoRegular.copyWith(
-                                              fontSize:
-                                                  Dimensions.fontSizeLarge,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge!
-                                                  .color,
-                                              overflow: TextOverflow.ellipsis),
-                                        ),
-                                      ]
-                                    : [],
-                              ),
-                            ),
-                            SizedBox(
-                              height: Dimensions.paddingSizeDefault,
-                            ),
-                            CustomDivider(
-                              color: Theme.of(context).disabledColor,
-                            ),
-                            SizedBox(
-                              height: Dimensions.paddingSizeDefault,
-                            ),
-                            PriceWithType(
-                              type: 'items_price'.tr,
-                              amount: PriceConverter.convertPrice(itemsPrice),
-                            ),
-                            PriceWithType(
-                                type: 'discount'.tr,
-                                amount:
-                                    '- ${PriceConverter.convertPrice(discount)}'),
-                            PriceWithType(
-                                type: 'vat_tax'.tr,
-                                amount:
-                                    '+ ${PriceConverter.convertPrice(tax)}'),
-                            PriceWithType(
-                                type: 'addons'.tr,
-                                amount:
-                                    '+ ${PriceConverter.convertPrice(addOnsPrice)}'),
-                            PriceWithType(
-                                type: 'total'.tr,
-                                amount: PriceConverter.convertPrice(
-                                    total + addOnsPrice),
-                                isTotal: true),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            CustomDivider(
-                                color: Theme.of(context).disabledColor),
-                            SizedBox(
-                              height: Dimensions.paddingSizeSmall,
-                            ),
-                          ],
-                        );
-                }),
                 SizedBox(
                   height: UtilsReponsive.height(context, 15),
                 ),
                 Row(
                   children: [
                     Expanded(
-                        child: CustomButton(
-                      height: ResponsiveHelper.isSmallTab() ? 40 : 50,
-                      transparent: true,
-                      buttonText: " Thêm sản phẩm",
-                      onPressed: () {
-                        Get.to(() => ProdcutListView());
-                      },
-                    )),
-                    const SizedBox(
+                      child: CustomButton(
+                          transparent: true,
+                          buttonText: "Xoá Đơn Hàng",
+                          fontSize: Dimensions.fontSizeDefault,
+                          onPressed: () {}),
+                    ),
+                    SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: CustomButton(
-                        height: ResponsiveHelper.isSmallTab() ? 40 : 50,
-                        buttonText: 'place_order'.tr,
-                        onPressed: () {
-                          final CartController cartController = Get.find();
-                          final SplashController splashController = Get.find();
-                          if (splashController.getTableId() == -1) {
-                            showCustomSnackBar('please_input_table_number'.tr);
-                          } else if (cartController.peopleNumber == null) {
-                            showCustomSnackBar('please_enter_people_number'.tr);
-                          } else {
-                            List<Cart> carts = [];
-                            for (int index = 0;
-                                index < cartController.cartList.length;
-                                index++) {
-                              CartModel cart = cartController.cartList[index];
-                              List<int> addOnIdList = [];
-                              List<int> addOnQtyList = [];
-                              List<OrderVariation> variations = [];
-                              cart.addOnIds?.forEach((addOn) {
-                                addOnIdList.add(addOn.id!);
-                                addOnQtyList.add(addOn.quantity!);
-                              });
-
-                              if (cart.product != null &&
-                                  cart.product!.variations != null &&
-                                  cart.variations != null) {
-                                for (int i = 0;
-                                    i < cart.product!.variations!.length;
-                                    i++) {
-                                  if (cart.variations![i].contains(true)) {
-                                    variations.add(OrderVariation(
-                                      name: cart.product!.variations![i].name,
-                                      values: OrderVariationValue(label: []),
-                                    ));
-                                    if (cart.product!.variations![i]
-                                            .variationValues !=
-                                        null) {
-                                      for (int j = 0;
-                                          j <
-                                              cart.product!.variations![i]
-                                                  .variationValues!.length;
-                                          j++) {
-                                        if (cart.variations![i][j]) {
-                                          variations[variations.length - 1]
-                                              .values
-                                              ?.label
-                                              ?.add(cart
-                                                      .product!
-                                                      .variations![i]
-                                                      .variationValues?[j]
-                                                      .level ??
-                                                  '');
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-
-                            Get.to(
-                              const PaymentUpdateScreen(),
-                              transition: Transition.leftToRight,
-                              duration: const Duration(milliseconds: 300),
-                            );
-                          }
-                        },
-                      ),
+                          // height: 50,
+                          buttonText: "Thêm món",
+                          fontSize: Dimensions.fontSizeDefault,
+                          onPressed: () {
+                            Get.to(() => PickProduct());
+                          }),
                     ),
                   ],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: UtilsReponsive.height(context, 50)),
+                  child: CustomDivider(
+                    color: Theme.of(context).disabledColor,
+                  ),
+                ),
+                Obx(() => _footSummary(context,
+                    data: controller.footSummaryData.value)),
+                SizedBox(
+                  height: UtilsReponsive.height(context, 15),
                 ),
                 SizedBox(
                   height: Dimensions.paddingSizeDefault,
@@ -292,6 +134,57 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
               ],
             ),
           );
+  }
+
+  Column _footSummary(BuildContext context, {required FootSummary data}) {
+    return Column(
+      children: [
+        _rowTextFootSummary(title: "Giá sản phẩm", content: data.originTotal),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Giảm giá", content: data.discount),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "VAT/Thuế", content: data.vat),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Phụ gia", content: data.extra),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(
+            title: "Tổng", content: data.finalTotal, isBold: true),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(
+            title: "Số tiền đã thanh toán", content: data.payed),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Thay đổi", content: data.change),
+        SizedBox(
+          height: UtilsReponsive.height(context, 20),
+        ),
+        CustomButton(
+            width: 500,
+            // height: 50,
+            buttonText: "Cập nhật đơn hàng",
+            fontSize: Dimensions.fontSizeDefault,
+            onPressed: () async {
+              await controller.updateFinal();
+              // Get.to(
+              //   () => CartUpdateView(
+              //     isOrderDetails: true,
+              //     oderId: controller.orderId.toString(),
+              //   ),
+              // );
+            }),
+      ],
+    );
   }
 
   Row _rowTextFootSummary(
@@ -315,9 +208,8 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
     );
   }
 
-  SizedBox _subItemDetail(BuildContext context, {required Details subItem}) {
-    double totalPriceSubItem =
-        subItem.productDetails!.price! * subItem.quantity!;
+  SizedBox _subItemDetail(BuildContext context, {required rm.Product subItem}) {
+    double totalPriceSubItem = subItem.price!;
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -331,7 +223,7 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                   child: Padding(
                     padding: const EdgeInsets.all(5),
                     child: Text(
-                      subItem.productDetails!.name!,
+                      '${subItem.name}',
                       style: TextStyleConstant.black16Roboto,
                     ),
                   )),
@@ -369,7 +261,7 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                   padding: const EdgeInsets.all(5.0),
                   child: Text(
                       NumberFormatUtils.formatDong(
-                          subItem.productDetails!.price!.toString()),
+                          subItem.priceOrigin!.toString()),
                       style: TextStyle(fontSize: 16, color: Colors.grey)),
                 ),
               ),
@@ -382,7 +274,6 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
   }
 
   Row _headerSummary(BuildContext context) {
-    final splashController = Get.find<SplashController>();
     return Row(
       children: [
         Expanded(
@@ -395,47 +286,34 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                   Expanded(child: SizedBox()),
                   Expanded(
                     child: Center(
-                      child: splashController
-                                  .getTable(splashController.getTableId())
-                                  ?.number ==
-                              null
-                          ? Center(
-                              child: Text(
-                                'add_table_number'.tr,
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeLarge,
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                ),
-                              ),
-                            )
-                          : Obx(() => Text.rich(
+                      child: Obx(() => Text.rich(
+                            TextSpan(
+                              children: [
                                 TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          '${'table'.tr}  ${controller.tableId.value} | ',
-                                      style: robotoMedium.copyWith(
-                                        fontSize: Dimensions.fontSizeLarge,
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge!
-                                            .color,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          '${controller.peopleNum.value} ${'people'.tr}',
-                                      style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeLarge,
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge!
-                                            .color,
-                                      ),
-                                    ),
-                                  ],
+                                  text:
+                                      '${'table'.tr}  ${controller.tableId.value} | ',
+                                  style: robotoMedium.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .color,
+                                  ),
                                 ),
-                              )),
+                                TextSpan(
+                                  text:
+                                      '${controller.peopleNum.value} ${'people'.tr}',
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .color,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
                     ),
                   ),
                   Expanded(
@@ -446,7 +324,7 @@ class OrderDetailUpdateRmView extends BaseView<OrderDetailUpdateRmController> {
                         context,
                         TableInputView(
                           callback: () async {
-                            await controller.updateTable();
+                            // await controller.updateTable();
                           },
                         ),
                       );

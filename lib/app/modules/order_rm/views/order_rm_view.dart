@@ -3,8 +3,9 @@ import 'package:citgroupvn_efood_table/app/core/constants/data_constant.dart';
 import 'package:citgroupvn_efood_table/app/helper/price_converter.dart';
 import 'package:citgroupvn_efood_table/app/util/icon_utils.dart';
 import 'package:citgroupvn_efood_table/data/model/response/oders_list_details.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/order/payment.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/splash/splash.dart';
+import 'package:citgroupvn_efood_table/app/modules/order/payment.dart';
+import 'package:citgroupvn_efood_table/app/modules/order/widget/oder_update_view.dart';
+import 'package:citgroupvn_efood_table/app/modules/splash/splash.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';

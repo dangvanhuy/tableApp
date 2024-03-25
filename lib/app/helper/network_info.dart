@@ -1,5 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/splash/splash_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/splash/controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

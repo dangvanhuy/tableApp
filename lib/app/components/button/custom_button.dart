@@ -12,19 +12,20 @@ class CustomButton extends StatelessWidget {
   final double? fontSize;
   final double radius;
   final IconData? icon;
+  final Color? bgColor;
 
-  const CustomButton({
-    super.key,
-    this.onPressed,
-    required this.buttonText,
-    this.transparent = false,
-    this.margin,
-    this.width,
-    this.height,
-    this.fontSize,
-    this.radius = 5,
-    this.icon,
-  });
+  const CustomButton(
+      {super.key,
+      this.onPressed,
+      required this.buttonText,
+      this.transparent = false,
+      this.margin,
+      this.width,
+      this.height,
+      this.fontSize,
+      this.radius = 5,
+      this.icon,
+      this.bgColor});
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +56,7 @@ class CustomButton extends StatelessWidget {
           child: TextButton(
             onPressed: onPressed == null ? null : () => onPressed!(),
             style: flatButtonStyle,
-            child:
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               icon != null
                   ? Padding(
                       padding: EdgeInsets.only(

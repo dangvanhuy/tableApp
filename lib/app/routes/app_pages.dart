@@ -1,20 +1,20 @@
 import 'package:get/get.dart';
 
-import '../../presentation/screens/home/home_screen.dart';
-import '../../presentation/screens/maintabview/main_tabview.dart';
-import '../../presentation/screens/order/oder_list/order_list_view.dart';
-import '../../presentation/screens/settings/setting_view.dart';
-import '../../presentation/screens/splash/splash_screen.dart';
+import '../modules/home/home_screen.dart';
+import '../modules/login/bindings/login_binding.dart';
+import '../modules/login/views/login_view.dart';
 import '../modules/main_tabview/bindings/main_tabview_binding.dart';
+import '../modules/main_tabview/main_tabview.dart';
 import '../modules/order_detail_rm/bindings/order_detail_rm_binding.dart';
 import '../modules/order_detail_rm/views/order_detail_rm_view.dart';
 import '../modules/order_detail_update_rm/bindings/order_detail_update_rm_binding.dart';
 import '../modules/order_detail_update_rm/views/order_detail_update_rm_view.dart';
 import '../modules/order_list/bindings/order_list_binding.dart';
+import '../modules/order_list/order_list_view.dart';
 import '../modules/order_rm/views/order_rm_view.dart';
-import '../modules/product/bindings/product_binding.dart';
-import '../modules/product/views/product_list_view.dart';
-import '../modules/setting/bindings/setting_binding.dart';
+import '../modules/settings/bindings/setting_binding.dart';
+import '../modules/settings/setting_view.dart';
+import '../modules/splash/splash_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -23,7 +23,7 @@ class AppPages {
     GetPage(name: Routes.splash, page: () => const SplashScreen()),
     GetPage(
       name: Routes.home,
-      page: () => HomeScreen(),
+      page: () => const HomeScreen(),
       transition: Transition.leftToRight,
       transitionDuration: const Duration(milliseconds: 300),
     ),
@@ -58,9 +58,9 @@ class AppPages {
       binding: OrderDetailUpdateRmBinding(),
     ),
     GetPage(
-      name: Routes.PRODUCT,
-      page: () => const ProdcutListView(),
-      binding: ProductBinding(),
+      name: Routes.LOGIN,
+      page: () => const LoginView(),
+      binding: LoginBinding(),
     ),
   ];
 }

@@ -6,7 +6,7 @@ class AppConstants {
   static const String appVersion = '1.5';
 
   // demo
-  static const String baseUrl = 'https://dev-quanlynhahang.citgroup.vn';
+  static const String baseUrl = 'https://chuoinhahang1.citgroup.vn';
   static const String configUri = '/api/v1/config/table';
   static const String categoryUri = '/api/v1/categories';
   static const String productUri = '/api/v1/products/latest';
@@ -18,6 +18,8 @@ class AppConstants {
   static const String orderDetailsUri = '/api/v1/table/order/details?';
   static const String orderListUri =
       '/api/v1/table/order/list?branch_table_token=';
+
+  static const String checkInfo = '/api/v1/check-info-by-branch?code=';
 
   // Shared Key
   static const String theme = 'theme';
@@ -34,6 +36,9 @@ class AppConstants {
   static const String branch = 'branch';
   static const String orderInfo = 'order_info';
   static const String isFixTable = 'is_fix_table';
+  static const String checkInfoCompany = 'check_Info';
+
+
 
   static List<LanguageModel> languages = [
     LanguageModel(

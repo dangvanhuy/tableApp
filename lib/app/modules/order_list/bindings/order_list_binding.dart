@@ -1,7 +1,7 @@
 import 'package:citgroupvn_efood_table/base/base_bindings.dart';
 import 'package:get/get.dart';
 
-import '../../../../presentation/controller/oder/order_list_controller.dart';
+import '../controller/order_list_controller.dart';
 
 class OrderListBinding extends BaseBindings {
   @override

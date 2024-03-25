@@ -1,18 +1,19 @@
 import 'dart:convert';
 
 import 'package:citgroupvn_efood_table/app/core/constants/app_constants.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/oder/order_controller_rm.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/settings/settings_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/oder/order_list_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/maintabview/main_tabview_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/cart/cart_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/language/language_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/language/localization_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/oder/order_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/product/product_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/promotional/promotional_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/splash/splash_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/theme/theme_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/login/controllers/login_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_rm/controllers/order_controller_rm.dart';
+import 'package:citgroupvn_efood_table/app/modules/settings/settings_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_list/controller/order_list_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/main_tabview/controller/main_tabview_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/cart/controller/cart_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/language/language_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/language/localization_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/order/controller/order_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/product_image/product_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/promotional_page/promotional_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/splash/controller/splash_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/language/theme_controller.dart';
 import 'package:citgroupvn_efood_table/data/repository/cart_repo.dart';
 import 'package:citgroupvn_efood_table/data/repository/language_repo.dart';
 import 'package:citgroupvn_efood_table/data/repository/order_repo.dart';
@@ -46,17 +47,19 @@ Future<Map<String, Map<String, String>>> init() async {
       () => SplashController(splashRepo: Get.find(), apiClient: Get.find()));
   Get.lazyPut(() => LocalizationController(sharedPreferences: Get.find()));
   Get.lazyPut(() => LanguageController(sharedPreferences: Get.find()));
-  Get.lazyPut(() => ProductController(productRepo: Get.find()));
+  Get.lazyPut(() => ProductController(
+        productRepo: Get.find(),
+      ));
   Get.lazyPut(() => CartController(cartRepo: Get.find()));
   Get.lazyPut(() => PromotionalController());
-  Get.lazyPut(() => OrderController(
-        orderRepo: Get.find(),
-      ));
+  Get.lazyPut(() => OrderController(orderRepo: Get.find()));
 
   Get.lazyPut(() => MainTabviewController());
   Get.lazyPut(() => OrderListController(orderRepo: Get.find()));
   Get.lazyPut(() => SettingsController());
   Get.lazyPut(() => OrderControllerRM());
+  Get.lazyPut(() => LoginController());
+  Get.lazyPut(() => OrderListController(orderRepo: Get.find()));
 
   // Retrieving localized data
   Map<String, Map<String, String>> languages = {};

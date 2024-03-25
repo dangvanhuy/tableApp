@@ -1,9 +1,9 @@
-import 'package:citgroupvn_efood_table/presentation/controller/splash/splash_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/splash/controller/splash_controller.dart';
 import 'package:citgroupvn_efood_table/app/helper/responsive_helper.dart';
 import 'package:citgroupvn_efood_table/app/resources/dimens/dimensions.dart';
 import 'package:citgroupvn_efood_table/app/util/images.dart';
 import 'package:citgroupvn_efood_table/app/components/custom_image.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/cart/cart_screen.dart';
+import 'package:citgroupvn_efood_table/app/modules/cart/cart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

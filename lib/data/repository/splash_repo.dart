@@ -42,12 +42,28 @@ class SplashRepo {
       return sharedPreferences.setBool(AppConstants.isFixTable, false);
     }
 
+    if (!sharedPreferences.containsKey(AppConstants.token)) {
+      return sharedPreferences.setString(AppConstants.token, '');
+    }
+
     return Future.value(true);
   }
 
   Future<bool> removeSharedData() {
     return sharedPreferences.clear();
   }
+
+  String getAccessToken() {
+    String accessToken = "";
+    final prefs = sharedPreferences;
+    String? tmp = prefs.getString('token');
+    if (tmp != null) {
+      accessToken = tmp;
+    }
+    return accessToken;
+  }
+
+
 
   int getTable() => sharedPreferences.getInt(AppConstants.tableNumber) ?? -1;
   void satTable(int number) =>

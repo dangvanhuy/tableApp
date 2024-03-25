@@ -1,4 +1,4 @@
-import 'package:citgroupvn_efood_table/presentation/controller/product/product_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/product_image/product_controller.dart';
 import 'package:citgroupvn_efood_table/data/model/response/product_model.dart';
 import 'package:citgroupvn_efood_table/app/resources/dimens/dimensions.dart';
 import 'package:citgroupvn_efood_table/app/util/styles.dart';

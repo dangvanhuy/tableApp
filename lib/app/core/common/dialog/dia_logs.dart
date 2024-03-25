@@ -6,10 +6,10 @@ import 'package:lottie/lottie.dart';
 class Dialogs {
   ///[titleStyle] can be used to change the dialog title style
   static const TextStyle titleStyle =
-  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+      const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
   ///[bcgColor] background default value
-  static const Color bcgColor = const Color(0xfffefefe);
+  static const Color bcgColor = Colors.white;
 
   ///[holder] holder for the custom view
   static const Widget holder = const SizedBox(

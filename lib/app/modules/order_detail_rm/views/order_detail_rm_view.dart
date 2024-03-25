@@ -1,16 +1,33 @@
+import 'dart:developer';
+
+import 'package:citgroupvn_efood_table/app/components/button/custom_button.dart';
+import 'package:citgroupvn_efood_table/app/components/custom_loader.dart';
+import 'package:citgroupvn_efood_table/app/components/divider/custom_divider.dart';
+import 'package:citgroupvn_efood_table/app/components/menu/custom_app_bar.dart';
 import 'package:citgroupvn_efood_table/app/core/constants/color_constants.dart';
+import 'package:citgroupvn_efood_table/app/helper/responsive_helper.dart';
+import 'package:citgroupvn_efood_table/app/modules/home/widget/filter_button_widget.dart';
+import 'package:citgroupvn_efood_table/app/modules/order_detail_update_rm/model/FootSummary.dart';
+import 'package:citgroupvn_efood_table/app/modules/root/no_data_screen.dart';
+import 'package:citgroupvn_efood_table/app/resources/dimens/dimensions.dart';
+import 'package:citgroupvn_efood_table/app/routes/app_routes.dart';
 import 'package:citgroupvn_efood_table/app/util/number_format_utils.dart';
 import 'package:citgroupvn_efood_table/app/util/reponsive_utils.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/cart/cart.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/order/payment.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/splash/splash.dart';
+import 'package:citgroupvn_efood_table/app/util/styles.dart';
+import 'package:citgroupvn_efood_table/base/base_view.dart';
+import 'package:citgroupvn_efood_table/data/model/response/order_details_model.dart';
 import 'package:flutter/material.dart';
+
+import 'package:get/get.dart';
+
 import '../controllers/order_detail_rm_controller.dart';
 
 class OrderDetailRmView extends BaseView<OrderDetailRmController> {
   const OrderDetailRmView({Key? key}) : super(key: key);
   @override
   Widget buildView(BuildContext context) {
+    OrderDetailRmController controller = Get.put(OrderDetailRmController(
+        isOrderDetails: true, orderId: Get.parameters["idOrder"]!));
     return ResponsiveHelper.isTab(context)
         ? _tabletView(context)
         : _mobileView(context);
@@ -57,12 +74,20 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
         showCart: false,
         onBackPressed: () => Get.back(),
       ),
+      // bottomNavigationBar: CustomButton(
+      //     width: 300,
+      //     // height: 50,
+      //     buttonText: "Chỉnh sửa đơn hàng",
+      //     fontSize: Dimensions.fontSizeDefault,
+      //     onPressed: () {
+      //       Get.toNamed(Routes.ORDER_DETAIL_UPDATE_RM,
+      //           parameters: {"idOrder": controller.orderId});
+      //     }),
       body: Obx(() => _tabletView(context)),
     );
   }
 
   _mainData(BuildContext context) {
-    final OrderController orderController = Get.find();
     return controller.currentOrderDetails == null
         ? Center(child: CustomLoader(color: Theme.of(context).primaryColor))
         : SingleChildScrollView(
@@ -82,117 +107,6 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
                           subItem: controller
                               .currentOrderDetails.value.details![index]);
                     }),
-                Builder(builder: (context) {
-                  bool render = false;
-                  if (orderController.currentOrderDetails?.details != null) {
-                    render = true;
-                  }
-                  double itemsPrice = 0;
-                  double discount = 0;
-                  double tax = 0;
-                  double addOnsPrice = 0;
-                  List<Details> orderDetails =
-                      orderController.currentOrderDetails?.details ?? [];
-                  if (orderController.currentOrderDetails?.details != null) {
-                    for (Details orderDetails in orderDetails) {
-                      itemsPrice = itemsPrice +
-                          (orderDetails.price! *
-                              orderDetails.quantity!.toInt());
-                      discount = discount +
-                          (orderDetails.discountOnProduct! *
-                              orderDetails.quantity!.toInt());
-                      tax = (tax +
-                          (orderDetails.taxAmount! *
-                              orderDetails.quantity!.toInt()) +
-                          orderDetails.addonTaxAmount!);
-                    }
-                  }
-
-                  double total = itemsPrice - discount + tax;
-
-                  return render
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            Text.rich(
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                              TextSpan(
-                                children: orderController.currentOrderDetails
-                                            ?.order?.orderNote !=
-                                        null
-                                    ? [
-                                        TextSpan(
-                                          text: 'note'.tr,
-                                          style: robotoMedium.copyWith(
-                                            fontSize: Dimensions.fontSizeLarge,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge!
-                                                .color,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              ' ${orderController.currentOrderDetails?.order?.orderNote ?? ''}',
-                                          style: robotoRegular.copyWith(
-                                              fontSize:
-                                                  Dimensions.fontSizeLarge,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge!
-                                                  .color,
-                                              overflow: TextOverflow.ellipsis),
-                                        ),
-                                      ]
-                                    : [],
-                              ),
-                            ),
-                            SizedBox(
-                              height: Dimensions.paddingSizeDefault,
-                            ),
-                            CustomDivider(
-                              color: Theme.of(context).disabledColor,
-                            ),
-                            SizedBox(
-                              height: Dimensions.paddingSizeDefault,
-                            ),
-                            PriceWithType(
-                              type: 'items_price'.tr,
-                              amount: PriceConverter.convertPrice(itemsPrice),
-                            ),
-                            PriceWithType(
-                                type: 'discount'.tr,
-                                amount:
-                                    '- ${PriceConverter.convertPrice(discount)}'),
-                            PriceWithType(
-                                type: 'vat_tax'.tr,
-                                amount:
-                                    '+ ${PriceConverter.convertPrice(tax)}'),
-                            PriceWithType(
-                                type: 'addons'.tr,
-                                amount:
-                                    '+ ${PriceConverter.convertPrice(addOnsPrice)}'),
-                            PriceWithType(
-                                type: 'total'.tr,
-                                amount: PriceConverter.convertPrice(
-                                    total + addOnsPrice),
-                                isTotal: true),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            CustomDivider(
-                                color: Theme.of(context).disabledColor),
-                            SizedBox(
-                              height: Dimensions.paddingSizeSmall,
-                            ),
-                          ],
-                        );
-                }),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       vertical: UtilsReponsive.height(context, 50)),
@@ -200,21 +114,63 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
                     color: Theme.of(context).disabledColor,
                   ),
                 ),
-                CustomButton(
-                    width: 400,
-                    // height: 50,
-                    buttonText: "Chỉnh sửa đơn hàng",
-                    fontSize: Dimensions.fontSizeDefault,
-                    onPressed: () {
-                      Get.toNamed(Routes.ORDER_DETAIL_UPDATE_RM,
-                          parameters: {"idOrder": controller.orderId});
-                    }),
+                Obx(() => _footSummary(context,
+                    data: controller.footSummaryData.value)),
+                SizedBox(
+                  height: UtilsReponsive.height(context, 15),
+                ),
                 SizedBox(
                   height: Dimensions.paddingSizeDefault,
                 ),
               ],
             ),
           );
+  }
+
+  Column _footSummary(BuildContext context, {required FootSummary data}) {
+    return Column(
+      children: [
+        _rowTextFootSummary(title: "Giá sản phẩm", content: data.originTotal),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Giảm giá", content: data.discount),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "VAT/Thuế", content: data.vat),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Phụ gia", content: data.extra),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(
+            title: "Tổng", content: data.finalTotal, isBold: true),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(
+            title: "Số tiền đã thanh toán", content: data.payed),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        _rowTextFootSummary(title: "Thay đổi", content: data.change),
+        SizedBox(
+          height: UtilsReponsive.height(context, 15),
+        ),
+        CustomButton(
+            width: 500,
+            // height: 50,
+            buttonText: "Chỉnh sửa đơn hàng",
+            fontSize: Dimensions.fontSizeDefault,
+            onPressed: () {
+              Get.toNamed(Routes.ORDER_DETAIL_UPDATE_RM,
+                  parameters: {"idOrder": controller.orderId});
+            }),
+      ],
+    );
   }
 
   Row _rowTextFootSummary(
@@ -241,8 +197,6 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
   SizedBox _subItemDetail(BuildContext context, {required Details subItem}) {
     double totalPriceSubItem =
         subItem.productDetails!.price! * subItem.quantity!;
-    String addonsName = '';
-
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -340,13 +294,7 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
                 TextSpan(
                   children: [
                     TextSpan(
-                      text:
-                          '${'table'.tr} ${Get.find<SplashController>().getTable(
-                                controller
-                                    .currentOrderDetails.value.order?.tableId,
-                                branchId: controller
-                                    .currentOrderDetails.value.order?.branchId,
-                              )?.number} |',
+                      text: '${'table'.tr} ${controller.tableId} |',
                       style: robotoMedium.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                         color: Theme.of(context).textTheme.bodyLarge!.color,
@@ -354,7 +302,7 @@ class OrderDetailRmView extends BaseView<OrderDetailRmController> {
                     ),
                     TextSpan(
                       text:
-                          '${controller.currentOrderDetails.value.order?.numberOfPeople ?? 'add'.tr} ${'people'.tr}',
+                          '${controller.peopleNum ?? 'add'.tr} ${'people'.tr}',
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                         color: Theme.of(context).textTheme.bodyLarge!.color,

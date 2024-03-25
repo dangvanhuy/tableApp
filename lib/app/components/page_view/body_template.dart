@@ -1,17 +1,17 @@
-import 'package:citgroupvn_efood_table/presentation/controller/oder/order_controller.dart';
-import 'package:citgroupvn_efood_table/presentation/controller/theme/theme_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/order/controller/order_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/language/theme_controller.dart';
 import 'package:citgroupvn_efood_table/app/helper/responsive_helper.dart';
 import 'package:citgroupvn_efood_table/app/resources/dimens/dimensions.dart';
 import 'package:citgroupvn_efood_table/app/util/images.dart';
 import 'package:citgroupvn_efood_table/app/components/dialog/animated_dialog.dart';
 import 'package:citgroupvn_efood_table/app/components/menu/custom_app_bar.dart';
 import 'package:citgroupvn_efood_table/app/components/button/custom_rounded_button.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/cart/widget/cart_details.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/cart/widget/cart_details.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/order/widget/order_screen.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/order/widget/order_success_screen.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/promotional_page/widget/setting_widget.dart';
-import 'package:citgroupvn_efood_table/presentation/screens/promotional_page/widget/setting_widget.dart';
+import 'package:citgroupvn_efood_table/app/modules/cart/widget/cart_details_create.dart';
+import 'package:citgroupvn_efood_table/app/modules/cart/widget/cart_details_create.dart';
+import 'package:citgroupvn_efood_table/app/modules/order/widget/order_screen.dart';
+import 'package:citgroupvn_efood_table/app/modules/order/widget/order_success_screen.dart';
+import 'package:citgroupvn_efood_table/app/modules/promotional_page/widget/setting_widget.dart';
+import 'package:citgroupvn_efood_table/app/modules/promotional_page/widget/setting_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

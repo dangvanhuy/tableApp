@@ -2,7 +2,7 @@ import 'package:citgroupvn_efood_table/app/modules/order_rm/controllers/order_rm
 import 'package:citgroupvn_efood_table/base/base_bindings.dart';
 import 'package:get/get.dart';
 
-import '../../../../presentation/controller/maintabview/main_tabview_controller.dart';
+import '../controller/main_tabview_controller.dart';
 
 class MainTabviewBinding extends BaseBindings {
   @override

@@ -1,4 +1,4 @@
-import 'package:citgroupvn_efood_table/presentation/controller/splash/splash_controller.dart';
+import 'package:citgroupvn_efood_table/app/modules/splash/controller/splash_controller.dart';
 import 'package:citgroupvn_efood_table/app/resources/dimens/dimensions.dart';
 import 'package:citgroupvn_efood_table/app/util/styles.dart';
 import 'package:flutter/material.dart';

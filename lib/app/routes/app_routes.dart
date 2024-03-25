@@ -13,5 +13,5 @@ class Routes {
   static const ORDER_DETAIL = '/order-detail';
   static const ORDER_DETAIL_RM = '/order-detail-rm';
   static const ORDER_DETAIL_UPDATE_RM = '/order-detail-update-rm';
-  static const PRODUCT = '/product';
+  static const LOGIN = '/login';
 }
